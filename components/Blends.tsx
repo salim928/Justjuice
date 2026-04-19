@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
 import BottleIllustration from "./BottleIllustration";
 
 type Blend = {
@@ -10,6 +11,7 @@ type Blend = {
   description: string;
   tags: string[];
   flavor: "mango" | "pineapple-ginger" | "pineapple-beet" | "tigernut" | "sobolo";
+  photo?: string;
   bg: string;
   text: string;
 };
@@ -23,6 +25,7 @@ const blends: Blend[] = [
       "Ripe Ghanaian mangoes pressed with orange — thick, tropical, almost a dessert. The bottle you reach for after a long hot day.",
     tags: ["tropical", "vitamin C", "kid approved"],
     flavor: "mango",
+    photo: "/photo_3_2026-04-19_18-52-04.jpg",
     bg: "var(--color-mango)",
     text: "var(--color-ink)",
   },
@@ -34,6 +37,7 @@ const blends: Blend[] = [
       "Bright pineapple, a sharp kick of fresh ginger, a cool breath of mint. Morning fuel that actually tastes good.",
     tags: ["energizing", "gut-friendly", "zingy"],
     flavor: "pineapple-ginger",
+    photo: "/photo_8_2026-04-19_18-52-04.jpg",
     bg: "var(--color-lime)",
     text: "var(--color-leaf-deep)",
   },
@@ -45,6 +49,7 @@ const blends: Blend[] = [
       "Earthy beetroot meets sweet pineapple with a mint finish. Deep, ruby, full of iron — the one your skin thanks you for.",
     tags: ["iron-rich", "immunity", "earthy-sweet"],
     flavor: "pineapple-beet",
+    photo: "/photo_4_2026-04-19_18-52-04.jpg",
     bg: "var(--color-beet)",
     text: "#ffffff",
   },
@@ -56,6 +61,7 @@ const blends: Blend[] = [
       "Creamy tigernut milk blended with coconut and dates. Optionally spiced with cloves & ginger. Nostalgic, nourishing, naturally sweet.",
     tags: ["dairy-free", "filling", "traditional"],
     flavor: "tigernut",
+    photo: "/photo_9_2026-04-19_18-52-04.jpg",
     bg: "var(--color-tigernut)",
     text: "var(--color-ink)",
   },
@@ -143,7 +149,19 @@ export default function Blends() {
                   </h3>
                 </div>
                 <div className="shrink-0 transition-transform duration-500 group-hover:-translate-y-2 group-hover:rotate-3">
-                  <BottleIllustration flavor={b.flavor} className="h-36" />
+                  {b.photo ? (
+                    <div className="relative h-36 w-28 overflow-hidden rounded-2xl border-2 border-[var(--color-ink)] shadow-[4px_4px_0_0_var(--color-ink)]">
+                      <Image
+                        src={b.photo}
+                        alt={`${b.name} bottle`}
+                        fill
+                        sizes="112px"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <BottleIllustration flavor={b.flavor} className="h-36" />
+                  )}
                 </div>
               </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
 
 const pillars = [
   {
@@ -77,6 +78,30 @@ export default function Story() {
                 same week. Short ingredient lists. Long-held traditions.
               </p>
             </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20, rotate: -3 }}
+              whileInView={{ opacity: 1, y: 0, rotate: -2 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative mt-10 max-w-sm rounded-[20px] border-4 border-[var(--color-cream)] bg-[var(--color-cream)] p-2 shadow-[8px_8px_0_0_var(--color-mango)]"
+            >
+              <div className="relative aspect-[3/4] overflow-hidden rounded-[12px]">
+                <Image
+                  src="/photo_5_2026-04-19_18-52-04.jpg"
+                  alt="The full JustJuice lineup — Pineapple-Ginger-Mint, Pineapple-Beetroot-Mint, Mango, and Tigernut bottles"
+                  fill
+                  sizes="(min-width: 768px) 384px, 90vw"
+                  className="object-cover"
+                />
+              </div>
+              <p
+                className="mt-3 mb-1 text-center text-sm text-[var(--color-ink)]"
+                style={{ fontFamily: "var(--font-caveat-brush)" }}
+              >
+                the full lineup, fresh today
+              </p>
+            </motion.div>
           </motion.div>
 
           {/* Right — pillars */}

@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
-import BottleIllustration from "./BottleIllustration";
+import Image from "next/image";
 
 const flavors = [
   { name: "Mango", color: "var(--color-mango)" },
@@ -191,9 +191,16 @@ export default function Hero() {
             initial={{ opacity: 0, y: 40, rotate: -8 }}
             animate={{ opacity: 1, y: 0, rotate: -4 }}
             transition={{ duration: 0.9, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
-            className="relative"
+            className="relative h-[420px] w-[300px] overflow-hidden rounded-[36px] border-2 border-[var(--color-ink)] shadow-[8px_8px_0_0_var(--color-ink)] md:h-[520px] md:w-[380px]"
           >
-            <BottleIllustration flavor="mango" className="h-[420px] md:h-[520px]" />
+            <Image
+              src="/photo_3_2026-04-19_18-52-04.jpg"
+              alt="JustJuice Mango bottle held among fresh citrus leaves"
+              fill
+              priority
+              sizes="(min-width: 768px) 380px, 300px"
+              className="object-cover"
+            />
           </motion.div>
 
           {/* Little scattered stickers */}
