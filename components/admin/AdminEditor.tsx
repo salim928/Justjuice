@@ -67,7 +67,7 @@ export default function AdminEditor({
               ...p,
               sizes: [
                 ...p.sizes,
-                { ml: 0, price: 0, inStock: true },
+                { ml: 0, price: 0, qty: 0 },
               ],
             }
       )
@@ -195,7 +195,7 @@ export default function AdminEditor({
                         Price ({CURRENCY})
                       </th>
                       <th className="px-3 py-2" style={{ fontFamily: "var(--font-jakarta)" }}>
-                        In stock
+                        Qty left
                       </th>
                       <th className="px-3 py-2" />
                     </tr>
@@ -235,21 +235,29 @@ export default function AdminEditor({
                           />
                         </td>
                         <td className="px-3 py-2">
-                          <label className="inline-flex cursor-pointer items-center gap-2">
+                          <div className="flex items-center gap-2">
                             <input
-                              type="checkbox"
-                              checked={size.inStock}
+                              type="number"
+                              min={0}
+                              step={1}
+                              value={size.qty}
                               onChange={(e) =>
                                 mutateSize(product.id, idx, {
-                                  inStock: e.target.checked,
+                                  qty: Math.max(0, Math.floor(Number(e.target.value) || 0)),
                                 })
                               }
-                              className="h-4 w-4 accent-[var(--color-leaf-deep)]"
+                              className="w-20 rounded-md border border-[var(--color-ink)]/30 bg-white px-2 py-1.5 text-sm outline-none focus:border-[var(--color-mango-deep)]"
                             />
-                            <span className="text-xs">
-                              {size.inStock ? "Yes" : "No"}
-                            </span>
-                          </label>
+                            {size.qty === 0 ? (
+                              <span className="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] uppercase tracking-wider text-[var(--color-cream)]">
+                                Out
+                              </span>
+                            ) : size.qty <= 3 ? (
+                              <span className="rounded-full bg-[var(--color-coral)] px-2 py-0.5 text-[10px] uppercase tracking-wider text-white">
+                                Low
+                              </span>
+                            ) : null}
+                          </div>
                         </td>
                         <td className="px-3 py-2 text-right">
                           <button

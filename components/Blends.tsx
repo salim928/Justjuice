@@ -9,9 +9,9 @@ import { CURRENCY } from "@/lib/config";
 import type { Product } from "@/lib/types";
 
 function featuredSize(p: Product) {
-  const inStock = p.sizes.filter((s) => s.inStock);
-  if (inStock.length === 0) return null;
-  return inStock.reduce((a, b) => (a.ml >= b.ml ? a : b));
+  const available = p.sizes.filter((s) => s.qty > 0);
+  if (available.length === 0) return null;
+  return available.reduce((a, b) => (a.ml >= b.ml ? a : b));
 }
 
 export default function Blends({ products }: { products: Product[] }) {
@@ -75,14 +75,21 @@ export default function Blends({ products }: { products: Product[] }) {
               >
                 <div className="tape -top-2 left-6 rotate-[-4deg]" />
 
-                {soldOut && (
+                {soldOut ? (
                   <span
                     className="absolute right-5 top-5 z-20 rounded-full border-2 border-[var(--color-ink)] bg-white/90 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-[var(--color-ink)]"
                     style={{ fontFamily: "var(--font-jakarta)" }}
                   >
                     Sold out today
                   </span>
-                )}
+                ) : feature && feature.qty <= 3 ? (
+                  <span
+                    className="absolute right-5 top-5 z-20 rounded-full border-2 border-[var(--color-ink)] bg-[var(--color-coral)] px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-white"
+                    style={{ fontFamily: "var(--font-jakarta)" }}
+                  >
+                    Only {feature.qty} left
+                  </span>
+                ) : null}
 
                 <div className="relative z-10 flex items-start justify-between gap-4">
                   <div>
@@ -143,7 +150,7 @@ export default function Blends({ products }: { products: Product[] }) {
                     {b.sizes
                       .map(
                         (s) =>
-                          `${s.ml}ml${s.inStock ? "" : " (out)"}`
+                          `${s.ml}ml${s.qty === 0 ? " (out)" : ""}`
                       )
                       .join(" · ")}
                   </span>

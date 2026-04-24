@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { createOrder, sanitizeIncomingOrder } from "@/lib/orders";
+import {
+  InsufficientStockError,
+  createOrder,
+  sanitizeIncomingOrder,
+} from "@/lib/orders";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +22,15 @@ export async function POST(request: Request) {
       { status: 201, headers: { "Cache-Control": "no-store" } }
     );
   } catch (err) {
+    if (err instanceof InsufficientStockError) {
+      return NextResponse.json(
+        {
+          error: "Some items are out of stock.",
+          shortages: err.shortages,
+        },
+        { status: 409, headers: { "Cache-Control": "no-store" } }
+      );
+    }
     const message = err instanceof Error ? err.message : "Invalid order";
     return NextResponse.json({ error: message }, { status: 400 });
   }

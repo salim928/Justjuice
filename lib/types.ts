@@ -8,7 +8,7 @@ export type Flavor =
 export type Size = {
   ml: number;
   price: number;
-  inStock: boolean;
+  qty: number;
 };
 
 export type Product = {

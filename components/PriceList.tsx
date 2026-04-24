@@ -132,7 +132,9 @@ export default function PriceList({ products }: { products: Product[] }) {
                         <ul className="space-y-2">
                           {product.sizes.map((size) => {
                             const disabled =
-                              !product.available || !size.inStock;
+                              !product.available || size.qty === 0;
+                            const low =
+                              !disabled && size.qty > 0 && size.qty <= 3;
                             return (
                               <li
                                 key={`${product.id}-${size.ml}`}
@@ -141,11 +143,15 @@ export default function PriceList({ products }: { products: Product[] }) {
                               >
                                 <span className="text-sm">
                                   {size.ml}ml
-                                  {disabled && (
+                                  {disabled ? (
                                     <span className="ml-2 rounded-full bg-[var(--color-ink)] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[var(--color-cream)]">
                                       Out
                                     </span>
-                                  )}
+                                  ) : low ? (
+                                    <span className="ml-2 rounded-full bg-[var(--color-coral)] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-white">
+                                      {size.qty} left
+                                    </span>
+                                  ) : null}
                                 </span>
                                 <span
                                   aria-hidden

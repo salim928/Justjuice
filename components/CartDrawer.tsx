@@ -21,6 +21,7 @@ export default function CartDrawer() {
   const [customerName, setCustomerName] = useState("");
   const [customerArea, setCustomerArea] = useState("");
   const [notes, setNotes] = useState("");
+  const [stockError, setStockError] = useState<string | null>(null);
 
   const buildMessage = () => {
     const lines: string[] = [];
@@ -42,9 +43,11 @@ export default function CartDrawer() {
     return lines.join("\n");
   };
 
-  const persistOrder = async (source: "whatsapp" | "email") => {
+  const persistOrder = async (
+    source: "whatsapp" | "email"
+  ): Promise<{ ok: true } | { ok: false; message: string }> => {
     try {
-      await fetch("/api/orders", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -63,20 +66,52 @@ export default function CartDrawer() {
           })),
         }),
       });
+      if (res.ok) return { ok: true };
+      if (res.status === 409) {
+        const body = await res.json().catch(() => ({}));
+        const shortages: { name: string; ml: number; available: number }[] =
+          Array.isArray(body?.shortages) ? body.shortages : [];
+        const detail = shortages
+          .map(
+            (s) =>
+              `${s.name} ${s.ml}ml (${s.available === 0 ? "sold out" : `only ${s.available} left`})`
+          )
+          .join(", ");
+        return {
+          ok: false,
+          message: detail
+            ? `Sorry, stock ran out: ${detail}. Please adjust your cart.`
+            : "Some items just sold out. Please adjust your cart.",
+        };
+      }
+      return { ok: false, message: "Could not save your order. Try again." };
     } catch {
-      /* non-blocking: customer still sends via WA/email */
+      return {
+        ok: false,
+        message: "Network issue saving your order. Try again.",
+      };
     }
   };
 
   const sendWhatsApp = async () => {
     if (items.length === 0) return;
-    await persistOrder("whatsapp");
+    setStockError(null);
+    const result = await persistOrder("whatsapp");
+    if (!result.ok) {
+      setStockError(result.message);
+      return;
+    }
     window.open(waLink(buildMessage()), "_blank", "noopener,noreferrer");
   };
 
   const sendEmail = async () => {
     if (items.length === 0) return;
-    await persistOrder("email");
+    setStockError(null);
+    const result = await persistOrder("email");
+    if (!result.ok) {
+      setStockError(result.message);
+      return;
+    }
     const subject = `JustJuice order — ${count} item${count === 1 ? "" : "s"}`;
     const href = `mailto:${OWNER_EMAIL}?subject=${encodeURIComponent(
       subject
@@ -298,6 +333,15 @@ export default function CartDrawer() {
                       {subtotal.toFixed(2)}
                     </span>
                   </div>
+                  {stockError && (
+                    <div
+                      role="alert"
+                      className="mt-3 rounded-xl border-2 border-[var(--color-hibiscus)] bg-white px-3 py-2 text-xs text-[var(--color-hibiscus)]"
+                      style={{ fontFamily: "var(--font-jakarta)" }}
+                    >
+                      {stockError}
+                    </div>
+                  )}
                   <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <button
                       type="button"

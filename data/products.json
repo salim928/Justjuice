@@ -14,9 +14,9 @@
       "category": "Mango & Orange",
       "available": true,
       "sizes": [
-        { "ml": 300, "price": 13, "inStock": true },
-        { "ml": 350, "price": 15, "inStock": true },
-        { "ml": 500, "price": 25, "inStock": true }
+        { "ml": 300, "price": 13, "qty": 10 },
+        { "ml": 350, "price": 15, "qty": 10 },
+        { "ml": 500, "price": 25, "qty": 10 }
       ]
     },
     {
@@ -33,9 +33,9 @@
       "category": "Pineapple Blends",
       "available": true,
       "sizes": [
-        { "ml": 300, "price": 13, "inStock": true },
-        { "ml": 350, "price": 15, "inStock": true },
-        { "ml": 500, "price": 25, "inStock": true }
+        { "ml": 300, "price": 13, "qty": 10 },
+        { "ml": 350, "price": 15, "qty": 10 },
+        { "ml": 500, "price": 25, "qty": 10 }
       ]
     },
     {
@@ -52,9 +52,9 @@
       "category": "Pineapple Blends",
       "available": true,
       "sizes": [
-        { "ml": 300, "price": 13, "inStock": true },
-        { "ml": 350, "price": 15, "inStock": true },
-        { "ml": 500, "price": 25, "inStock": true }
+        { "ml": 300, "price": 13, "qty": 10 },
+        { "ml": 350, "price": 15, "qty": 10 },
+        { "ml": 500, "price": 25, "qty": 10 }
       ]
     },
     {
@@ -71,9 +71,9 @@
       "category": "Tigernut Milk Drink",
       "available": true,
       "sizes": [
-        { "ml": 300, "price": 10, "inStock": true },
-        { "ml": 350, "price": 15, "inStock": true },
-        { "ml": 500, "price": 20, "inStock": true }
+        { "ml": 300, "price": 10, "qty": 10 },
+        { "ml": 350, "price": 15, "qty": 10 },
+        { "ml": 500, "price": 20, "qty": 10 }
       ]
     },
     {
@@ -90,7 +90,7 @@
       "category": "Fruity Sobolo",
       "available": true,
       "sizes": [
-        { "ml": 500, "price": 10, "inStock": true }
+        { "ml": 500, "price": 10, "qty": 10 }
       ]
     }
   ],

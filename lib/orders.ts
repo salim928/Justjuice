@@ -1,13 +1,54 @@
 import "server-only";
 import crypto from "node:crypto";
 import { readJson, writeJson } from "./storage";
+import { readCatalog, writeCatalog } from "./products";
 import type {
+  Catalog,
   Order,
   OrderItem,
   OrderSource,
   OrderStatus,
   OrderStore,
+  Product,
 } from "./types";
+
+/**
+ * Thrown when an incoming order can't be filled because one or more items
+ * don't have enough stock. `shortages` lists each blocked item so the
+ * customer sees exactly what's missing.
+ */
+export class InsufficientStockError extends Error {
+  shortages: { productId: string; ml: number; name: string; available: number; requested: number }[];
+  constructor(
+    shortages: InsufficientStockError["shortages"]
+  ) {
+    const names = shortages
+      .map((s) => `${s.name} ${s.ml}ml (only ${s.available} left)`)
+      .join(", ");
+    super(`Insufficient stock: ${names}`);
+    this.name = "InsufficientStockError";
+    this.shortages = shortages;
+  }
+}
+
+function adjustCatalogStock(
+  catalog: Catalog,
+  adjustments: { productId: string; ml: number; delta: number }[]
+): Catalog {
+  const products: Product[] = catalog.products.map((p) => {
+    const changes = adjustments.filter((a) => a.productId === p.id);
+    if (changes.length === 0) return p;
+    return {
+      ...p,
+      sizes: p.sizes.map((s) => {
+        const match = changes.find((c) => c.ml === s.ml);
+        if (!match) return s;
+        return { ...s, qty: Math.max(0, s.qty + match.delta) };
+      }),
+    };
+  });
+  return { products, updatedAt: new Date().toISOString() };
+}
 
 const KEY = "orders";
 const EMPTY: OrderStore = { orders: [], updatedAt: new Date(0).toISOString() };
@@ -115,6 +156,39 @@ export async function createOrder(input: {
   items: OrderItem[];
   source: OrderSource;
 }): Promise<Order> {
+  // Stock check + decrement happens before the order is persisted so an
+  // overbooked order never lands in the list. Not truly atomic across the
+  // two Redis keys — two simultaneous orders could oversell by 1 for the
+  // last unit. Acceptable at juice-shop volume; the owner can cancel to
+  // restore stock if it happens.
+  const catalog = await readCatalog();
+
+  const shortages: InsufficientStockError["shortages"] = [];
+  const adjustments: { productId: string; ml: number; delta: number }[] = [];
+  for (const it of input.items) {
+    const product = catalog.products.find((p) => p.id === it.productId);
+    const size = product?.sizes.find((s) => s.ml === it.ml);
+    const available = size?.qty ?? 0;
+    const productAvailable = product?.available !== false;
+    if (!product || !size || !productAvailable || available < it.qty) {
+      shortages.push({
+        productId: it.productId,
+        ml: it.ml,
+        name: product?.name ?? it.name,
+        available: productAvailable ? available : 0,
+        requested: it.qty,
+      });
+    } else {
+      adjustments.push({ productId: it.productId, ml: it.ml, delta: -it.qty });
+    }
+  }
+  if (shortages.length > 0) {
+    throw new InsufficientStockError(shortages);
+  }
+
+  const next = adjustCatalogStock(catalog, adjustments);
+  await writeCatalog(next.products);
+
   const store = await readStore();
   const subtotal =
     Math.round(
@@ -141,22 +215,50 @@ export async function updateOrderStatus(
     throw new Error("Invalid status");
   }
   const store = await readStore();
-  let updated: Order | null = null;
-  const next = store.orders.map((o) => {
-    if (o.id !== id) return o;
-    updated = { ...o, status };
-    return updated;
-  });
-  if (!updated) return null;
-  await writeStore(next);
+  const existing = store.orders.find((o) => o.id === id);
+  if (!existing) return null;
+  if (existing.status === status) return existing;
+
+  // Cancellation returns stock; un-cancelling removes it again.
+  const wasCancelled = existing.status === "cancelled";
+  const nowCancelled = status === "cancelled";
+  if (wasCancelled !== nowCancelled) {
+    const catalog = await readCatalog();
+    const adjustments = existing.items.map((it) => ({
+      productId: it.productId,
+      ml: it.ml,
+      delta: nowCancelled ? it.qty : -it.qty,
+    }));
+    const next = adjustCatalogStock(catalog, adjustments);
+    await writeCatalog(next.products);
+  }
+
+  const updated: Order = { ...existing, status };
+  await writeStore(
+    store.orders.map((o) => (o.id === id ? updated : o))
+  );
   return updated;
 }
 
 export async function deleteOrder(id: string): Promise<boolean> {
   const store = await readStore();
-  const next = store.orders.filter((o) => o.id !== id);
-  if (next.length === store.orders.length) return false;
-  await writeStore(next);
+  const target = store.orders.find((o) => o.id === id);
+  if (!target) return false;
+
+  // Deleting a non-cancelled order returns its units to stock so the
+  // catalog doesn't drift from reality.
+  if (target.status !== "cancelled") {
+    const catalog = await readCatalog();
+    const adjustments = target.items.map((it) => ({
+      productId: it.productId,
+      ml: it.ml,
+      delta: it.qty,
+    }));
+    const next = adjustCatalogStock(catalog, adjustments);
+    await writeCatalog(next.products);
+  }
+
+  await writeStore(store.orders.filter((o) => o.id !== id));
   return true;
 }
 

@@ -55,7 +55,15 @@ export function sanitizeProducts(input: unknown): Product[] {
         if (!Number.isFinite(price) || price < 0) {
           throw new Error(`product ${idx} size ${sIdx}: invalid price`);
         }
-        return { ml, price, inStock: Boolean(so.inStock) };
+        // qty is the new field; legacy data may use inStock:boolean.
+        let qty: number;
+        if (so.qty !== undefined) {
+          const n = Number(so.qty);
+          qty = Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
+        } else {
+          qty = so.inStock === false ? 0 : 10;
+        }
+        return { ml, price, qty };
       }),
     };
   });
