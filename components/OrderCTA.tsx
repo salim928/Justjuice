@@ -48,15 +48,15 @@ export default function OrderCTA() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                href="tel:+233508726113"
+                href="tel:+233249754347"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-[var(--color-mango)] px-6 py-4 text-sm text-[var(--color-ink)] transition-transform hover:scale-[1.03]"
                 style={{ fontFamily: "var(--font-jakarta)" }}
               >
                 <Phone className="h-4 w-4" />
-                Call 0508 726 113
+                Call 0249 754 347
               </a>
               <a
-                href="https://wa.me/233508726113?text=Hi%20JustJuice%2C%20I%27d%20like%20to%20place%20an%20order"
+                href="https://wa.me/233249754347?text=Hi%20JustJuice%2C%20I%27d%20like%20to%20place%20an%20order"
                 target="_blank"
                 rel="noreferrer"
                 className="group inline-flex items-center justify-center gap-2 rounded-full border-2 border-[var(--color-mango)] px-6 py-4 text-sm text-[var(--color-mango)] transition-colors hover:bg-[var(--color-mango)] hover:text-[var(--color-ink)]"
@@ -88,8 +88,8 @@ export default function OrderCTA() {
             <ContactCard
               icon={<Phone className="h-5 w-5" />}
               label="Phone"
-              primary="0508 726 113"
-              href="tel:+233508726113"
+              primary="0249 754 347"
+              href="tel:+233249754347"
               bg="var(--color-mango)"
               text="var(--color-ink)"
             />

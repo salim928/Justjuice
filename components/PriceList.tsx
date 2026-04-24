@@ -1,49 +1,34 @@
 "use client";
 
 import { motion } from "motion/react";
+import { Plus } from "lucide-react";
+import { useCart } from "./CartContext";
+import { CURRENCY, PHONE_TEL } from "@/lib/config";
+import type { Product } from "@/lib/types";
 
-type Row = { size: string; price: string; note?: string };
+type Category = {
+  title: string;
+  accent: string;
+  products: Product[];
+};
 
-const categories: { title: string; accent: string; rows: Row[]; foot?: string }[] = [
-  {
-    title: "Pineapple Blends",
-    accent: "var(--color-lime)",
-    rows: [
-      { size: "500ml", price: "₵25" },
-      { size: "350ml", price: "₵15" },
-      { size: "300ml", price: "₵13" },
-    ],
-    foot: "Pineapple-Ginger-Mint  ·  Pineapple-Beetroot-Mint",
-  },
-  {
-    title: "Mango & Orange",
-    accent: "var(--color-mango)",
-    rows: [
-      { size: "500ml", price: "₵25" },
-      { size: "350ml", price: "₵15" },
-      { size: "300ml", price: "₵13" },
-    ],
-    foot: "Same pricing as pineapple blends",
-  },
-  {
-    title: "Tigernut Milk Drink",
-    accent: "var(--color-tigernut)",
-    rows: [
-      { size: "500ml", price: "₵20" },
-      { size: "350ml", price: "₵15" },
-      { size: "300ml", price: "₵10" },
-    ],
-    foot: "With or without cloves & ginger",
-  },
-  {
-    title: "Fruity Sobolo",
-    accent: "var(--color-hibiscus)",
-    rows: [{ size: "One size", price: "₵10" }],
-    foot: "Brewed hibiscus, ice cold",
-  },
-];
+function groupByCategory(products: Product[]): Category[] {
+  const map = new Map<string, Category>();
+  for (const p of products) {
+    let cat = map.get(p.category);
+    if (!cat) {
+      cat = { title: p.category, accent: p.accent, products: [] };
+      map.set(p.category, cat);
+    }
+    cat.products.push(p);
+  }
+  return Array.from(map.values());
+}
 
-export default function PriceList() {
+export default function PriceList({ products }: { products: Product[] }) {
+  const { addItem } = useCart();
+  const categories = groupByCategory(products);
+
   return (
     <section
       id="prices"
@@ -71,12 +56,11 @@ export default function PriceList() {
             className="mx-auto mt-4 max-w-lg text-[17px] text-[var(--color-ink-soft)]"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Call ahead for bulk orders — events, parties, offices.
-            We'll deliver around Teshie-Nungua and surroundings.
+            Tap <span className="font-semibold">+ Add</span> on any size to build
+            your order. We'll deliver around Teshie-Nungua and surroundings.
           </p>
         </div>
 
-        {/* Menu card — receipt feel */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -85,7 +69,6 @@ export default function PriceList() {
           className="relative mx-auto max-w-3xl"
         >
           <div className="relative rounded-[32px] border-2 border-[var(--color-ink)] bg-[var(--color-cream)] shadow-[10px_10px_0_0_var(--color-ink)]">
-            {/* Perforated top */}
             <div className="relative border-b-2 border-dashed border-[var(--color-ink)] px-8 py-6 text-center md:px-14">
               <div className="flex items-center justify-center gap-3">
                 <span className="h-px w-12 bg-[var(--color-ink)]" />
@@ -130,45 +113,85 @@ export default function PriceList() {
                     </h3>
                   </div>
 
-                  <ul className="space-y-2">
-                    {cat.rows.map((r) => (
-                      <li
-                        key={r.size}
-                        className="flex items-baseline justify-between gap-3 text-[var(--color-ink)]"
-                        style={{ fontFamily: "var(--font-jakarta)" }}
-                      >
-                        <span className="text-sm">{r.size}</span>
-                        <span
-                          aria-hidden
-                          className="mx-1 flex-1 border-b border-dotted border-[var(--color-ink)]/40"
-                        />
-                        <span className="text-base font-semibold">{r.price}</span>
-                      </li>
+                  <div className="space-y-4">
+                    {cat.products.map((product) => (
+                      <div key={product.id}>
+                        {cat.products.length > 1 && (
+                          <p
+                            className="mb-1 text-[11px] uppercase tracking-wider text-[var(--color-ink-soft)]"
+                            style={{ fontFamily: "var(--font-jakarta)" }}
+                          >
+                            {product.name}
+                            {!product.available && (
+                              <span className="ml-2 rounded-full bg-[var(--color-ink)] px-1.5 py-0.5 text-[9px] text-[var(--color-cream)]">
+                                Sold out
+                              </span>
+                            )}
+                          </p>
+                        )}
+                        <ul className="space-y-2">
+                          {product.sizes.map((size) => {
+                            const disabled =
+                              !product.available || !size.inStock;
+                            return (
+                              <li
+                                key={`${product.id}-${size.ml}`}
+                                className="flex items-baseline justify-between gap-3 text-[var(--color-ink)]"
+                                style={{ fontFamily: "var(--font-jakarta)" }}
+                              >
+                                <span className="text-sm">
+                                  {size.ml}ml
+                                  {disabled && (
+                                    <span className="ml-2 rounded-full bg-[var(--color-ink)] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[var(--color-cream)]">
+                                      Out
+                                    </span>
+                                  )}
+                                </span>
+                                <span
+                                  aria-hidden
+                                  className="mx-1 flex-1 border-b border-dotted border-[var(--color-ink)]/40"
+                                />
+                                <span className="text-base font-semibold">
+                                  {CURRENCY}
+                                  {size.price}
+                                </span>
+                                <button
+                                  type="button"
+                                  disabled={disabled}
+                                  onClick={() =>
+                                    addItem({
+                                      productId: product.id,
+                                      name: product.name,
+                                      ml: size.ml,
+                                      price: size.price,
+                                    })
+                                  }
+                                  className="inline-flex items-center gap-1 rounded-full border-2 border-[var(--color-ink)] bg-[var(--color-mango)] px-2.5 py-1 text-[10px] uppercase tracking-wider text-[var(--color-ink)] transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+                                  aria-label={`Add ${product.name} ${size.ml}ml to cart`}
+                                >
+                                  <Plus className="h-3 w-3" />
+                                  Add
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
                     ))}
-                  </ul>
-
-                  {cat.foot && (
-                    <p
-                      className="mt-4 text-[12px] italic leading-snug text-[var(--color-ink-soft)]"
-                      style={{ fontFamily: "var(--font-serif)" }}
-                    >
-                      {cat.foot}
-                    </p>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* Bottom perforation */}
             <div className="flex items-center justify-between border-t-2 border-dashed border-[var(--color-ink)] px-8 py-5 md:px-14">
               <span
                 className="text-xs uppercase tracking-[0.2em] text-[var(--color-ink-soft)]"
                 style={{ fontFamily: "var(--font-jakarta)" }}
               >
-                Prices in Ghana Cedi (₵)
+                Prices in Ghana Cedi ({CURRENCY})
               </span>
               <a
-                href="tel:+233508726113"
+                href={`tel:${PHONE_TEL}`}
                 className="rounded-full bg-[var(--color-ink)] px-5 py-2 text-xs text-[var(--color-mango)] transition-transform hover:scale-105"
                 style={{ fontFamily: "var(--font-jakarta)" }}
               >
@@ -177,7 +200,6 @@ export default function PriceList() {
             </div>
           </div>
 
-          {/* Decorative taped note */}
           <div
             className="absolute -right-6 -top-8 hidden rotate-[8deg] rounded-lg border border-[var(--color-ink)]/20 bg-[var(--color-mango)] px-4 py-3 text-sm shadow-md md:block"
             style={{ fontFamily: "var(--font-display)" }}

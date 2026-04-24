@@ -1,0 +1,98 @@
+{
+  "products": [
+    {
+      "id": "mango",
+      "name": "Mango + Orange",
+      "subtitle": "The sunrise one",
+      "description": "Ripe Ghanaian mangoes pressed with orange — thick, tropical, almost a dessert. The bottle you reach for after a long hot day.",
+      "tags": ["tropical", "vitamin C", "kid approved"],
+      "flavor": "mango",
+      "photo": "/photo_3_2026-04-19_18-52-04.jpg",
+      "bg": "var(--color-mango)",
+      "text": "var(--color-ink)",
+      "accent": "var(--color-mango)",
+      "category": "Mango & Orange",
+      "available": true,
+      "sizes": [
+        { "ml": 300, "price": 13, "inStock": true },
+        { "ml": 350, "price": 15, "inStock": true },
+        { "ml": 500, "price": 25, "inStock": true }
+      ]
+    },
+    {
+      "id": "pineapple-ginger",
+      "name": "Pineapple + Ginger + Mint",
+      "subtitle": "The wake-up call",
+      "description": "Bright pineapple, a sharp kick of fresh ginger, a cool breath of mint. Morning fuel that actually tastes good.",
+      "tags": ["energizing", "gut-friendly", "zingy"],
+      "flavor": "pineapple-ginger",
+      "photo": "/photo_8_2026-04-19_18-52-04.jpg",
+      "bg": "var(--color-lime)",
+      "text": "var(--color-leaf-deep)",
+      "accent": "var(--color-lime)",
+      "category": "Pineapple Blends",
+      "available": true,
+      "sizes": [
+        { "ml": 300, "price": 13, "inStock": true },
+        { "ml": 350, "price": 15, "inStock": true },
+        { "ml": 500, "price": 25, "inStock": true }
+      ]
+    },
+    {
+      "id": "pineapple-beet",
+      "name": "Pineapple + Beetroot + Mint",
+      "subtitle": "The glow maker",
+      "description": "Earthy beetroot meets sweet pineapple with a mint finish. Deep, ruby, full of iron — the one your skin thanks you for.",
+      "tags": ["iron-rich", "immunity", "earthy-sweet"],
+      "flavor": "pineapple-beet",
+      "photo": "/photo_4_2026-04-19_18-52-04.jpg",
+      "bg": "var(--color-beet)",
+      "text": "#ffffff",
+      "accent": "var(--color-lime)",
+      "category": "Pineapple Blends",
+      "available": true,
+      "sizes": [
+        { "ml": 300, "price": 13, "inStock": true },
+        { "ml": 350, "price": 15, "inStock": true },
+        { "ml": 500, "price": 25, "inStock": true }
+      ]
+    },
+    {
+      "id": "tigernut",
+      "name": "Tigernut + Coconut + Dates",
+      "subtitle": "The quiet comfort",
+      "description": "Creamy tigernut milk blended with coconut and dates. Optionally spiced with cloves & ginger. Nostalgic, nourishing, naturally sweet.",
+      "tags": ["dairy-free", "filling", "traditional"],
+      "flavor": "tigernut",
+      "photo": "/photo_9_2026-04-19_18-52-04.jpg",
+      "bg": "var(--color-tigernut)",
+      "text": "var(--color-ink)",
+      "accent": "var(--color-tigernut)",
+      "category": "Tigernut Milk Drink",
+      "available": true,
+      "sizes": [
+        { "ml": 300, "price": 10, "inStock": true },
+        { "ml": 350, "price": 15, "inStock": true },
+        { "ml": 500, "price": 20, "inStock": true }
+      ]
+    },
+    {
+      "id": "sobolo",
+      "name": "Fruity Hibiscus Sobolo",
+      "subtitle": "The grandma classic",
+      "description": "Dried hibiscus petals brewed slow with fruit notes. Tart, floral, refreshing — served ice cold like it should be.",
+      "tags": ["antioxidants", "cooling", "heritage"],
+      "flavor": "sobolo",
+      "photo": null,
+      "bg": "var(--color-hibiscus)",
+      "text": "#ffffff",
+      "accent": "var(--color-hibiscus)",
+      "category": "Fruity Sobolo",
+      "available": true,
+      "sizes": [
+        { "ml": 500, "price": 10, "inStock": true }
+      ]
+    }
+  ],
+  "updatedAt": "2026-04-24T00:00:00.000Z"
+}

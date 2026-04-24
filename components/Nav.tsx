@@ -63,7 +63,7 @@ export default function Nav() {
           </nav>
 
           <a
-            href="tel:+233508726113"
+            href="tel:+233249754347"
             className="group inline-flex items-center gap-2 rounded-full bg-[var(--color-ink)] px-4 py-2 text-xs font-medium text-[var(--color-cream)] transition-transform hover:scale-[1.03]"
             style={{ fontFamily: "var(--font-jakarta)" }}
           >
