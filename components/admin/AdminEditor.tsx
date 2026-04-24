@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { LogOut, Save, RotateCcw, Plus, Trash2 } from "lucide-react";
+import { Save, RotateCcw, Plus, Trash2 } from "lucide-react";
 import type { Catalog, Product } from "@/lib/types";
 import { CURRENCY } from "@/lib/config";
 
@@ -119,57 +118,29 @@ export default function AdminEditor({
     }
   };
 
-  const logout = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.refresh();
-  };
-
   return (
-    <main className="min-h-screen bg-[var(--color-cream)] pb-24">
-      <header className="sticky top-0 z-10 border-b-2 border-[var(--color-ink)] bg-[var(--color-cream)]/95 px-5 py-4 backdrop-blur md:px-8">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
-          <div>
-            <p
-              className="text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-soft)]"
-              style={{ fontFamily: "var(--font-jakarta)" }}
-            >
-              JustJuice · Owner
-            </p>
-            <h1
-              className="text-2xl leading-none md:text-3xl"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              Product & Stock
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/"
-              className="rounded-full border-2 border-[var(--color-ink)] px-4 py-2 text-xs"
-              style={{ fontFamily: "var(--font-jakarta)" }}
-            >
-              View site
-            </Link>
-            <button
-              type="button"
-              onClick={logout}
-              className="inline-flex items-center gap-1.5 rounded-full border-2 border-[var(--color-ink)] bg-white px-3 py-2 text-xs"
-              style={{ fontFamily: "var(--font-jakarta)" }}
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              Sign out
-            </button>
-          </div>
-        </div>
-      </header>
-
+    <main className="pb-24">
       <section className="mx-auto max-w-5xl px-5 py-6 md:px-8 md:py-10">
-        <p
-          className="mb-6 text-sm text-[var(--color-ink-soft)]"
-          style={{ fontFamily: "var(--font-jakarta)" }}
-        >
-          Last saved: {new Date(savedAt).toLocaleString()}
-        </p>
+        <div className="mb-6">
+          <p
+            className="text-[10px] uppercase tracking-[0.3em] text-[var(--color-ink-soft)]"
+            style={{ fontFamily: "var(--font-jakarta)" }}
+          >
+            Menu editor
+          </p>
+          <h1
+            className="text-3xl leading-none md:text-4xl"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Products & stock
+          </h1>
+          <p
+            className="mt-2 text-sm text-[var(--color-ink-soft)]"
+            style={{ fontFamily: "var(--font-jakarta)" }}
+          >
+            Last saved: {new Date(savedAt).toLocaleString()}
+          </p>
+        </div>
 
         <div className="space-y-6">
           {draft.map((product) => (

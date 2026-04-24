@@ -1,13 +1,12 @@
 import "server-only";
-import { promises as fs } from "node:fs";
-import path from "node:path";
+import { readJson, writeJson } from "./storage";
 import type { Catalog, Product } from "./types";
 
-const DATA_PATH = path.join(process.cwd(), "data", "products.json");
+const KEY = "products";
+const EMPTY: Catalog = { products: [], updatedAt: new Date(0).toISOString() };
 
 export async function readCatalog(): Promise<Catalog> {
-  const raw = await fs.readFile(DATA_PATH, "utf-8");
-  return JSON.parse(raw) as Catalog;
+  return readJson<Catalog>(KEY, EMPTY);
 }
 
 export async function writeCatalog(products: Product[]): Promise<Catalog> {
@@ -15,7 +14,7 @@ export async function writeCatalog(products: Product[]): Promise<Catalog> {
     products,
     updatedAt: new Date().toISOString(),
   };
-  await fs.writeFile(DATA_PATH, JSON.stringify(catalog, null, 2), "utf-8");
+  await writeJson<Catalog>(KEY, catalog);
   return catalog;
 }
 

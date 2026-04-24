@@ -42,13 +42,41 @@ export default function CartDrawer() {
     return lines.join("\n");
   };
 
-  const sendWhatsApp = () => {
+  const persistOrder = async (source: "whatsapp" | "email") => {
+    try {
+      await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source,
+          customer: {
+            name: customerName.trim(),
+            area: customerArea.trim(),
+            notes: notes.trim(),
+          },
+          items: items.map((it) => ({
+            productId: it.productId,
+            name: it.name,
+            ml: it.ml,
+            price: it.price,
+            qty: it.qty,
+          })),
+        }),
+      });
+    } catch {
+      /* non-blocking: customer still sends via WA/email */
+    }
+  };
+
+  const sendWhatsApp = async () => {
     if (items.length === 0) return;
+    await persistOrder("whatsapp");
     window.open(waLink(buildMessage()), "_blank", "noopener,noreferrer");
   };
 
-  const sendEmail = () => {
+  const sendEmail = async () => {
     if (items.length === 0) return;
+    await persistOrder("email");
     const subject = `JustJuice order — ${count} item${count === 1 ? "" : "s"}`;
     const href = `mailto:${OWNER_EMAIL}?subject=${encodeURIComponent(
       subject

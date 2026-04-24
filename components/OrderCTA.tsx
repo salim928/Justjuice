@@ -48,12 +48,12 @@ export default function OrderCTA() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                href="tel:+233249754347"
+                href="tel:+233508726113"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-[var(--color-mango)] px-6 py-4 text-sm text-[var(--color-ink)] transition-transform hover:scale-[1.03]"
                 style={{ fontFamily: "var(--font-jakarta)" }}
               >
                 <Phone className="h-4 w-4" />
-                Call 0249 754 347
+                Call 0508 726 113
               </a>
               <a
                 href="https://wa.me/233249754347?text=Hi%20JustJuice%2C%20I%27d%20like%20to%20place%20an%20order"
@@ -63,7 +63,7 @@ export default function OrderCTA() {
                 style={{ fontFamily: "var(--font-jakarta)" }}
               >
                 <MessageCircle className="h-4 w-4" />
-                WhatsApp us
+                WhatsApp +233 24 975 4347
               </a>
             </div>
 
@@ -84,14 +84,24 @@ export default function OrderCTA() {
           </motion.div>
 
           {/* Right: contact cards */}
-          <div className="grid grid-rows-3 gap-4">
+          <div className="grid auto-rows-fr gap-4">
             <ContactCard
               icon={<Phone className="h-5 w-5" />}
-              label="Phone"
-              primary="0249 754 347"
-              href="tel:+233249754347"
+              label="Call"
+              primary="0508 726 113"
+              sub="Voice calls only"
+              href="tel:+233508726113"
               bg="var(--color-mango)"
               text="var(--color-ink)"
+            />
+            <ContactCard
+              icon={<MessageCircle className="h-5 w-5" />}
+              label="WhatsApp"
+              primary="+233 24 975 4347"
+              sub="Orders, chats, bulk requests"
+              href="https://wa.me/233249754347?text=Hi%20JustJuice%2C%20I%27d%20like%20to%20place%20an%20order"
+              bg="#25D366"
+              text="#ffffff"
             />
             <ContactCard
               icon={<Mail className="h-5 w-5" />}

@@ -39,3 +39,34 @@ export type CartItem = {
   price: number;
   qty: number;
 };
+
+export type OrderStatus = "new" | "confirmed" | "delivered" | "cancelled";
+
+export type OrderSource = "whatsapp" | "email" | "web";
+
+export type OrderItem = {
+  productId: string;
+  name: string;
+  ml: number;
+  price: number;
+  qty: number;
+};
+
+export type Order = {
+  id: string;
+  createdAt: string;
+  status: OrderStatus;
+  source: OrderSource;
+  customer: {
+    name: string;
+    area: string;
+    notes: string;
+  };
+  items: OrderItem[];
+  subtotal: number;
+};
+
+export type OrderStore = {
+  orders: Order[];
+  updatedAt: string;
+};
